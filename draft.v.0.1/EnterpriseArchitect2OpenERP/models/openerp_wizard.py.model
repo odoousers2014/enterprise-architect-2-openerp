@@ -1,0 +1,42 @@
+# -*- encoding: utf-8 -*-
+
+from osv import osv, fields
+
+
+class ${classname}(osv.osv_memory):
+	_name = "${name}"
+	
+	_columns = {
+		${fields}
+	}
+	
+	def default_get(self, cr, uid, fields, context=None):
+		if context is None: 
+			context = {}
+		res = super(${classname}, self).default_get(cr, uid, fields, context=context)
+
+		#----- code here
+
+		return res
+
+	
+	def print_report(self, cr, uid, ids, context=None):
+		if context is None: 
+			context = {}
+		
+		data = self.read(cr, uid, ids, [${fields_coma}], context=context)
+		data = data and data[0] or {}
+		
+		datas = {
+			'ids': context.get('active_ids',[]),
+			'model': '${reportname}',
+			'form': data
+		}
+
+		return {
+            'type' : 'ir.actions.report.xml',
+            'report_name':'${reportname}',
+            'datas' : datas,
+        }
+	
+${classname}()

@@ -1,0 +1,38 @@
+# -*- encoding: utf-8 -*-
+
+from osv import osv
+from osv import fields
+from lxml import etree
+
+from openerp import netsvc
+from openerp import pooler
+from openerp.osv import fields, osv, orm
+from openerp.tools.translate import _
+
+
+class ${classname}(osv.osv):
+	_name = "${name}"
+	_description = "${description}"
+	${inherit}
+
+	${functions_before}
+	
+	_columns = {
+		${fields}
+	}
+	
+	_defaults = {
+		${defaults}
+	}
+	${constraints_functions}
+	_constraints = [
+		${constraints}
+	]
+	
+	_sql_constraints = [
+		${sql_constraints}
+	]
+	
+	${functions}
+	
+${classname}()

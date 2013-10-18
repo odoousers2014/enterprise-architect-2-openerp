@@ -1,0 +1,41 @@
+# -*- encoding: utf-8 -*-
+
+import netsvc
+import pooler
+
+from report.interface import report_rml
+
+
+class ${classname}(report_rml):
+	
+	def __init__(self, name, table, tmpl, xsl):
+        
+		report_rml.__init__(self, name, table, tmpl, xsl)
+
+
+	
+	def create_xml(self, cr, uid, ids, datas, context=None):
+
+		pool = pooler.get_pool(cr.dbname)	
+		${tablename}_ids = pool.get('${table}').search(cr, uid, [])
+		
+		xml_records = ""
+		
+		for ${tablename}_id in ${tablename}_ids:
+			${tablename} = pool.get('${table}').browse(cr, uid, ${tablename}_id, context=context)
+			
+			fields = ""
+			${fields}
+			xml_records += "<${tablename}>" + fields + "</${tablename}>"
+	
+		xml = '''<?xml version="1.0" encoding="ISO-8859-1"?>
+		
+		<report>
+			''' + xml_records + '''
+		</report>
+
+		''';
+	
+		return self.post_process_xml_data(cr, uid, xml, context)
+	
+${classname}('${name}', '${table}', '', '${xslfile}')
