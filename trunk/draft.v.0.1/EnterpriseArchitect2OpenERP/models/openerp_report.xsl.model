@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format">
+
+  <xsl:template match="/">
+
+    <document filename="${tablename}.pdf">
+
+		<template pageSize="(21.0cm, 29.7cm)"
+			topMargin="2cm" bottomMargin="2cm" leftMargin="2cm" rightMargin="2cm"
+			title="${alias}" author="Universal Consulting" allowSplitting="20">
+			
+		<pageTemplate id="first">
+		  
+			<pageGraphics>
+
+				<!-- header -->
+				<translate dx="2cm" dy="25.7cm"/>
+				<rect x="0cm" y="0cm" width="17cm" height="2cm"/>
+				<lines>
+					4cm 0cm 4cm 2cm
+					13cm 0cm 13cm 2cm
+					0cm 1cm 4cm 1cm
+					13cm 1cm 17cm 1cm
+				</lines>
+				<setFont name="Helvetica" size="16"/>
+				<drawCentredString x="8.5cm" y="0.8cm">TITRE ETAT</drawCentredString>
+				<setFont name="Helvetica" size="14"/>
+				<drawCentredString x="2cm" y="1.3cm">company name</drawCentredString>
+				<setFont name="Helvetica" size="9"/>
+				<drawCentredString x="2cm" y="0.4cm">Mod. IM</drawCentredString>
+				<drawCentredString x="15cm" y="0.4cm">Page <pageNumber/></drawCentredString>
+				<drawCentredString x="15cm" y="1.3cm">Ed. 01 - Rev. 01</drawCentredString>
+				<translate dx="-2cm" dy="-25.7cm"/>
+
+				<!-- footer -->
+				<translate dx="2cm" dy="2cm"/>
+				<grid xs="0cm,13cm,17cm" ys="0cm,1.2cm"/>
+				<setFont name="Helvetica" size="7"/>
+				<drawString x="0.15cm" y="0.85cm">Responsabile Controllo</drawString>
+				<drawString x="13.15cm" y="0.85cm">Data</drawString>
+				<translate dx="-2cm" dy="-2cm"/>
+
+				<!-- -->
+				<!-- <grid xs="2cm,19cm" ys="3.7cm,22.5cm"/> -->
+
+			</pageGraphics>
+
+			<!-- partie de la page qui contient la section des données de story -->
+			<frame id="first" x1="2cm" y1="3.7cm" width="17cm" height="21.5cm"/>
+		  
+		</pageTemplate>
+
+		</template>
+
+		<stylesheet>
+	  
+			<!-- -->
+			<blockTableStyle id="TableContent">
+				<lineStyle kind="BOX" colorName="#386a92"/>
+				<lineStyle kind="LINEAFTER" colorName="#386a92"/>
+				<lineStyle kind="LINEBELOW" colorName="#386a92"/>
+				
+				<blockBackground colorName="#053763" start="0,0" stop="-1,0"/>
+				
+				<blockValign value="MIDDLE"/>
+				<blockLeftPadding length="0.15cm"/>
+				<blockRightPadding length="0.15cm"/>
+				<blockTopPadding length="0.15cm"/>
+				<blockBottomPadding length="0.15cm"/>
+			</blockTableStyle>
+
+			<!-- -->
+			<blockTableStyle id="Table1">
+				<blockSpan start="3,0" stop="4,0"/>
+				<blockAlignment value="LEFT"/>
+				<blockValign value="MIDDLE"/>
+				<lineStyle kind="GRID" colorName="black" start="0,0" stop="-1,0"/>
+				<blockBackground colorName="lightblue" start="0,0" stop="-1,0"/>
+				<blockLeftPadding length="0.3cm"/>
+				<blockRightPadding length="0.3cm"/>
+				<blockTopPadding length="0.16cm"/>
+				<blockBottomPadding length="0.16cm"/>
+			</blockTableStyle>
+
+			<!-- -->
+			<paraStyle name="tableLeft" fontName="Times-Roman" fontSize="10" alignment="LEFT"/>
+			<paraStyle name="tableCenter" fontName="Times-Roman" fontSize="10" alignment="CENTER"/>
+			<paraStyle name="tableRight" fontName="Times-Roman" fontSize="10" alignment="RIGHT"/>
+			<paraStyle name="tableLeftH" fontName="Helvetica" fontSize="10" alignment="LEFT"/>
+			<paraStyle name="tableCenterH" fontName="Helvetica" fontSize="10" alignment="CENTER"/>
+			<paraStyle name="tableRightH" fontName="Helvetica" fontSize="10" alignment="RIGHT"/>
+			
+			<paraStyle name="rowTitle" fontName="Helvetica-Bold" fontSize="9" textColor="white" alignment="LEFT" spaceBefore="0.5 cm" boxStrokeColor="green"/>
+			
+			<paraStyle name="rowContent" fontName="Helvetica" fontSize="9" alignment="LEFT" spaceBefore="0.5 cm"/>
+	  
+		</stylesheet>
+
+		<story>
+
+			<xsl:apply-templates select="report"/>
+
+		</story>
+
+    </document>
+
+  </xsl:template>
+
+	<xsl:template match="report">
+
+		<blockTable colWidths="${colwidths}" repeatRows="1" style="TableContent">
+			<tr>
+				${fields_titles}
+			</tr>
+			
+			<xsl:for-each select="${tablename}">
+				<tr>
+					${fields}
+				</tr>
+			</xsl:for-each>
+		</blockTable>
+
+	</xsl:template>
+
+</xsl:stylesheet>

@@ -1,0 +1,179 @@
+-- new script --
+name : empty_function
+usage : field
+
+	def _${empty_name}(self, cr, uid, ids, field, arg, context=None):
+		# contenu généré, à modifier
+
+		res = {}
+		row = self.browse(cr, uid, ids[0], context=context)
+		res[row.id] = ${result}
+
+		return res
+
+
+-- new script --
+name : empty_function
+usage : init
+
+	def _${empty_name}(self, cr, uid, ids, context=None):
+		# contenu généré, à modifier
+
+		return ${result}
+
+
+-- new script --
+name : empty_function
+usage : classic
+
+	def _${empty_name}(self, cr, uid, ids, context=None):
+		# contenu généré, à modifier
+
+		return
+
+
+-- new script --
+name : function_constraint_operator
+usage : classic
+
+	def _${constraint_name}(self, cr, uid, ids, context=None):
+		obj = self.browse(cr, uid, ids[0], context=context)
+		if obj.${operande1} ${operator} obj.${operande2}:
+			return True
+		return False
+		
+
+-- new script --
+name : function_action_wkf
+usage : classic
+
+	def ${function_name}(self, cr, uid, ids, context=None):
+		# contenu généré, à modifier si besoin
+		
+		return self.write(cr, uid, ids, {'state': '${state}'}, context=context)
+		
+
+-- new script --
+name : function_first_action_wkf
+usage : classic
+
+	def ${function_name}(self, cr, uid, ids, context=None):
+		# contenu généré, à modifier si besoin
+		
+		if context is None:
+			context = {}
+
+		return self.write(cr, uid, ids, {'state': '${state}'}, context)
+		
+
+-- new script --
+name : function_sum
+usage : field
+
+	def _${function_name}(self, cr, uid, ids, field, arg, context=None):
+		# contenu généré, à modifier si besoin
+		
+		res = {}
+		
+		for row in self.browse(cr, uid, ids[0], context=context):
+			res[row.id] = ${property_zero}
+
+			if (row.${children}_ids):
+				sum_${property_name} = sum([r.${property_to_sum} for r in row.${children}_ids])
+				res[row.id] = sum_${property_name}
+
+		return res
+
+		
+-- new script --
+name : function_min
+usage : field
+
+	def _${function_name}(self, cr, uid, ids, field, arg, context=None):
+		# contenu généré, à modifier si besoin
+		
+		res = {}
+		
+		return True
+		
+		
+-- new script --
+name : function_caller_action_wkf
+usage : classic
+
+	def ${function_name}(self, cr, uid, ids, context=None):
+		# contenu généré, à modifier si besoin
+		
+		self.${action_wkf}(cr, uid, ids, context)
+		
+		return True
+
+
+-- new script --
+name : function_label
+usage : classic
+
+	def _${property_name}_compute(self, cr, uid, ${classlink}_id=None, ${property_name}=0.0, context=None):
+
+		label = _('Valeur maximum autorisée : 0')
+
+		if ((${classlink}_id != None) & (${classlink}_id != False)) :
+			${classlink} = self.pool.get('${module}.${classlink}').browse(cr, uid, ${classlink}_id, context=context)
+
+			if (${property_name} > ${classlink}.${property_link}):
+				label = _('Valeur hors limite autorisée : ') + str(${classlink}.${property_link})
+			else :
+				label = _('Valeur maximum autorisée : ') + str(${classlink}.${property_link})
+
+		return label
+
+	def _${property_name}_label_init(self, cr, uid, ${classlink}_id=None, context=None):
+
+		return self._${property_name}_compute(cr, uid)
+
+	def _${property_name}_label(self, cr, uid, ids, name, arg, context=None):
+
+		${classname} = self.pool.get('${module}.${classname}').browse(cr, uid, ids[0], context=context)
+		return { ids[0] : self._${property_name}_compute(cr, uid, ${classname}.${classlink}_id) }
+
+
+-- new script --
+name : function_onchange_maxuse
+usage : classic
+
+	def onchange_${property_name}(self, cr, uid, ids, ${classlink}_id, ${property_name}, context=None):
+
+		label = self._${property_name}_compute(cr, uid, ${classlink}_id, ${property_name})
+
+		return {'value': {'${property_name}_label': label }}
+
+	def onchange_${classlink}_id(self, cr, uid, ids, ${classlink}_id, ${property_name}, context=None):
+
+		label = self._${property_name}_compute(cr, uid, ${classlink}_id, ${property_name})
+
+		return {'value': { '${property_name}_label': label }}
+
+
+-- new script --
+name : function_print
+usage : classic
+
+	def _${print_function}(self, cr, uid, ids, context=None):
+		if context == None:
+			context = {}
+		
+		selfname = self._name.replace('.', '_')
+
+		view_obj = self.pool.get('ir.ui.view')
+		view_id = view_obj.search(cr, uid, [('model', '=', selfname), ('name', '=', selfname + '_form')])
+
+		return {
+			'name': 'Gestion lignes budgétaires',
+			'view_type': 'form',
+			'view_mode': 'form',
+			'res_model': self._name,
+			'view_id': False,
+			'context': default_context,#"{'default_account_id':'"+vals['janvier']+"'}",#context,
+			'type': 'ir.actions.act_window',
+			'target': 'new',		
+		}
